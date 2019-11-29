@@ -1,0 +1,91 @@
+---
+title: "Homework 11"
+author:
+- Alicja Dutkiewicz - s2530856
+- Irina Gurewitsch - s2621258
+- João Esteves - s2679663
+date: "29/11/2019"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(igraph);
+```
+
+## Exercise 1
+
+```{r}
+# Intitialize graph
+edge.list <- list(c(2, 1), c(1,2), c(4,1), c(4,3), c(5,1), c(11, 1),
+                  c(11,4), c(11,5), c(5,11), c(6,11), c(7,11), 
+                  c(8,11), c(9,11), c(10, 11), c(10, 1), c(9, 1), c(8,1))
+
+A <- matrix(0, nrow = 11, ncol = 11)
+
+for(edge in edge.list) {
+  A[edge[1], edge[2]] <- 1
+}
+
+# Add self loops
+M <- A + diag(rep(1, 11))
+
+# Set parameters of PageRank algorithm
+alpha <- 0.7
+beta <- (1 - alpha) / nrow(M)
+
+# Define function for iterative update
+update.x <- function(x) {
+  out.degree <- rowSums(M)
+  
+  # D_inv <- diag(1 / out.degree)
+  # x <- alpha * x %*% D_inv %*% M + beta
+  
+  for (i in seq_along(x)) {
+    tmp <- 0
+    for (j in seq(1, nrow(M))) {
+      if (i != j && M[j, i] != 0){
+        tmp <- tmp + x[j] / out.degree[j]
+      }
+    }
+    x[i] <- alpha * tmp + beta
+  }
+
+  return(x)
+}
+
+# Layout and colors of graph (according to wikimedia example)
+l <- matrix(c(
+  2, 4, 0.5, 1.4,   5, 5, 4.5, 4, 3, 1.5, 3,
+  5, 5.3, 4,   3.5, 4, 3, 3.5, 2.7, 2.2, 2, 3.5
+), nrow=11)
+
+smileycolors=c('yellow','red','green', 'red', 'green', 
+               'green','green','green','green','green', 
+               'turquoise')
+
+# Perform iterations for fixpoint convergence 
+n.iter <- 20
+x <- rep(0, 11)
+
+G <- graph.adjacency(A)
+
+for (i in seq(n.iter)) {
+  x.old <- x
+  x <- update.x(x.old)
+  print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
+  plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+  Sys.sleep(1)
+  
+}
+print(x)
+```
+
+## Exercise 2
+
+## Exercise 3
+
+## Exercise 4
+
+## Exercise 5
