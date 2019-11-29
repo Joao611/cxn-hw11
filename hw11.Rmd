@@ -70,8 +70,8 @@ page.rank <- function(n.iter, alpha, M, G, draw.plot = FALSE) {
   for (i in seq(n.iter)) {
     x.old <- x
     x <- update.x(x.old, alpha, beta)
-    print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
     if (draw.plot) {
+      print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
       plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
     }
   }
@@ -103,7 +103,6 @@ x <- page.rank(n.iter = 20, alpha = -0.01, M, G)
 plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
 x <- page.rank(n.iter = 20, alpha = -0.1, M, G)
 plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
-
 ```
 
 It can be seen in the first graph that having a negative alpha (-0.01) makes previously small nodes bigger, which means nodes with a small rank now obtain a higher rank. Decreasing the negative alpha further, as is the case in the second graph with alpha = -0.1, the same effect is observed with the oiginally small nodes growing even bigger but now it's also observed that the originally big nodes get smaller, so what used to be the more important nodes are now lower ranked.
@@ -111,6 +110,26 @@ It can be seen in the first graph that having a negative alpha (-0.01) makes pre
 This means the algorithm is reversed, attributing a higher rank to less important nodes. This is explained by the fact that alpha is a factor applied to each node's strength given by its neighbors, so a negative alpha will result in higher values for inferior neighbor strengths.
 
 ## Exercise 3
+
+Below are shown page rank plots for alpha values of 0.9, 0.95, 0.98 and 1.
+
+```{r}
+A <- init.graph()
+G <- graph.adjacency(A)
+# Add self loops
+M <- A + diag(rep(1, 11))
+
+for (alpha in c(0.9, 0.95, 0.98, 1)) {
+  x <- page.rank(n.iter = 20, alpha, M, G)
+  print(paste('alpha =', alpha))
+  print(paste('x =', x))
+  plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+}
+```
+
+Page rank produces proper results for alpha values lower than 1. At alpha = 1, the nodes' scores are all 0 and so the vertices do not appear in the plot because their sizes are also 0. This is because the initial score for each node is 0, and the only way to increase it when all the neighbors are also 0 is the (1 - alpha) / |V| parcel in the formula. When alpha = 1, this factor will be 0 and therefore the scores can't increase. Furthermore, alpha > 1 would lead to invalid plots in this case because the scores would be negative.
+
+It should be noted the transition around this boundary is smooth, with the nodes' scores lowering gradually as alpha increases up to 1.
 
 ## Exercise 4
 
