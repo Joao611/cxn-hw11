@@ -14,29 +14,37 @@ knitr::opts_chunk$set(echo = TRUE)
 library(igraph);
 ```
 
-## Exercise 1
+### Reusable code for the exercises
 
 ```{r}
-# Intitialize graph
-edge.list <- list(c(2, 1), c(1,2), c(4,1), c(4,3), c(5,1), c(11, 1),
-                  c(11,4), c(11,5), c(5,11), c(6,11), c(7,11), 
-                  c(8,11), c(9,11), c(10, 11), c(10, 1), c(9, 1), c(8,1))
+# Layout and colors of graph (according to wikimedia example)
+l <- matrix(c(
+  2, 4, 0.5, 1.4,   5, 5, 4.5, 4, 3, 1.5, 3,
+  5, 5.3, 4,   3.5, 4, 3, 3.5, 2.7, 2.2, 2, 3.5
+), nrow=11)
 
-A <- matrix(0, nrow = 11, ncol = 11)
+smileycolors=c('yellow','red','green', 'red', 'green', 
+               'green','green','green','green','green', 
+               'turquoise')
 
-for(edge in edge.list) {
-  A[edge[1], edge[2]] <- 1
+init.graph <- function() {
+    # Intitialize graph
+  edge.list <- list(c(2, 1), c(1,2), c(4,1), c(4,3), c(5,1), c(11, 1),
+                    c(11,4), c(11,5), c(5,11), c(6,11), c(7,11), 
+                    c(8,11), c(9,11), c(10, 11), c(10, 1), c(9, 1), c(8,1))
+  
+  A <- matrix(0, nrow = 11, ncol = 11)
+  
+  for(edge in edge.list) {
+    A[edge[1], edge[2]] <- 1
+  }
+  
+  
+  return(A)
 }
 
-# Add self loops
-M <- A + diag(rep(1, 11))
-
-# Set parameters of PageRank algorithm
-alpha <- 0.7
-beta <- (1 - alpha) / nrow(M)
-
-# Define function for iterative update
-update.x <- function(x) {
+# Define function for iterative page rank update
+update.x <- function(x, alpha, beta) {
   out.degree <- rowSums(M)
   
   # D_inv <- diag(1 / out.degree)
@@ -55,31 +63,32 @@ update.x <- function(x) {
   return(x)
 }
 
-# Layout and colors of graph (according to wikimedia example)
-l <- matrix(c(
-  2, 4, 0.5, 1.4,   5, 5, 4.5, 4, 3, 1.5, 3,
-  5, 5.3, 4,   3.5, 4, 3, 3.5, 2.7, 2.2, 2, 3.5
-), nrow=11)
-
-smileycolors=c('yellow','red','green', 'red', 'green', 
-               'green','green','green','green','green', 
-               'turquoise')
-
-# Perform iterations for fixpoint convergence 
-n.iter <- 20
-x <- rep(0, 11)
-
-G <- graph.adjacency(A)
-
-for (i in seq(n.iter)) {
-  x.old <- x
-  x <- update.x(x.old)
-  print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
-  plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
-  Sys.sleep(1)
+page.rank <- function(n.iter, alpha, M, G, draw.plot = FALSE) {
+  beta <- (1 - alpha) / nrow(M)
+  x <- rep(0, 11)
   
+  for (i in seq(n.iter)) {
+    x.old <- x
+    x <- update.x(x.old, alpha, beta)
+    print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
+    if (draw.plot) {
+      plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+    }
+  }
+  return(x)
 }
-print(x)
+```
+
+## Exercise 1
+
+```{r}
+A <- init.graph()
+G <- graph.adjacency(A)
+# Add self loops
+M <- A + diag(rep(1, 11))
+
+x <- page.rank(n.iter = 20, alpha = 0.85, M, G)
+plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
 ```
 
 ## Exercise 2
