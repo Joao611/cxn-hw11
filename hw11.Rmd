@@ -93,6 +93,23 @@ plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
 
 ## Exercise 2
 
+```{r}
+A <- init.graph()
+G <- graph.adjacency(A)
+# Add self loops
+M <- A + diag(rep(1, 11))
+
+x <- page.rank(n.iter = 20, alpha = -0.01, M, G)
+plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+x <- page.rank(n.iter = 20, alpha = -0.1, M, G)
+plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+
+```
+
+It can be seen in the first graph that having a negative alpha (-0.01) makes previously small nodes bigger, which means nodes with a small rank now obtain a higher rank. Decreasing the negative alpha further, as is the case in the second graph with alpha = -0.1, the same effect is observed with the oiginally small nodes growing even bigger but now it's also observed that the originally big nodes get smaller, so what used to be the more important nodes are now lower ranked.
+
+This means the algorithm is reversed, attributing a higher rank to less important nodes. This is explained by the fact that alpha is a factor applied to each node's strength given by its neighbors, so a negative alpha will result in higher values for inferior neighbor strengths.
+
 ## Exercise 3
 
 ## Exercise 4
