@@ -156,6 +156,6 @@ In addition to the drawn graphs, a plot has been generated for each alpha: the d
 
 ## Exercise 5
 
-The time complex of the function *update(x)* is $O(n^2)$.
+The time complexity of the function *update(x)* is $O(n^2)$.
 
 It could be improved by only accessing each node's neighbors rather than checking every possible pair of nodes. The graph's data structure would have to be changed from an adjacency matrix to another such as an adjacency list, which would change the time complexity of *update(x)* to $O(n*m)$, where *m* is the number of edges reaching a particular node. The sparser a graph is, the lower this time complexity, unlike the one of the original *update(x)* the time which stays independent of the edges.
