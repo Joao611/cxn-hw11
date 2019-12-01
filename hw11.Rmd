@@ -63,17 +63,22 @@ update.x <- function(x, alpha, beta) {
   return(x)
 }
 
-page.rank <- function(n.iter, alpha, M, G, draw.plot = FALSE) {
+page.rank <- function(n.iter, alpha, M, G, draw.plot = FALSE, draw.convergence = FALSE) {
   beta <- (1 - alpha) / nrow(M)
   x <- rep(0, 11)
+  x.diffs <- c()
   
   for (i in seq(n.iter)) {
     x.old <- x
     x <- update.x(x.old, alpha, beta)
+    x.diffs[i] <- sqrt(sum((x-x.old)^2))
     if (draw.plot) {
-      print(paste('iteration', i, sqrt(sum((x-x.old)^2))))
+      print(paste('iteration', i, x.diffs[i]))
       plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
     }
+  }
+  if (draw.convergence) {
+    plot(1:n.iter, x.diffs, xlab = "Iterations")
   }
   return(x)
 }
@@ -132,5 +137,23 @@ Page rank produces proper results for alpha values lower than 1. At alpha = 1, t
 It should be noted the transition around this boundary is smooth, with the nodes' scores lowering gradually as alpha increases up to 1.
 
 ## Exercise 4
+
+```{r}
+A <- init.graph()
+G <- graph.adjacency(A)
+# Add self loops
+M <- A + diag(rep(1, 11))
+
+for (alpha in c(0.1, 0.5, 0.7)) {
+  print(paste('alpha =', alpha))
+  x <- page.rank(n.iter = 20, alpha, M, G, draw.convergence = TRUE)
+  print(x)
+  plot(G, vertex.size = x*5e2, vertex.color=smileycolors, layout=l)
+}
+```
+
+3 values of alpha are tested above: 0.1, 0.5 and 0.7. By the drawn graphs, a small alpha doesn't differentiate the nodes much because the characteristics of each node don't matter as much. As alpha increases, nodes are differentiated more and more until, as also shown in exercise 3, the big nodes start getting smaller too.
+
+In addition to the drawn graphs, a plot has been generated for each alpha: the difference between the nodes' scores throughout the iterations of the page rank algorithm. The difference measured here is $\sqrt{\sum_{j = 1}^{k}({x_j - x_{old_j}})^2}$, where *k* is the number of nodes.
 
 ## Exercise 5
