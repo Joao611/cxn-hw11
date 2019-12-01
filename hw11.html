@@ -14,6 +14,7 @@
 <meta name="author" content="Irina Gurewitsch - s2621258" />
 <meta name="author" content="João Esteves - s2679663" />
 
+<meta name="date" content="2019-01-12" />
 
 <title>Homework 11</title>
 
@@ -368,7 +369,7 @@ summary {
 <h4 class="author">Alicja Dutkiewicz - s2530856</h4>
 <h4 class="author">Irina Gurewitsch - s2621258</h4>
 <h4 class="author">João Esteves - s2679663</h4>
-<h4 class="date">29/11/2019</h4>
+<h4 class="date">01/12/2019</h4>
 
 </div>
 
@@ -546,6 +547,8 @@ for (alpha in c(0.1, 0.5, 0.7)) {
 </div>
 <div id="exercise-5" class="section level2">
 <h2>Exercise 5</h2>
+<p>The time complex of the function <em>update(x)</em> is <span class="math inline">\(O(n^2)\)</span>.</p>
+<p>It could be improved by only accessing each node’s neighbors rather than checking every possible pair of nodes. The graph’s data structure would have to be changed from an adjacency matrix to another such as an adjacency list, which would change the time complexity of <em>update(x)</em> to <span class="math inline">\(O(n*m)\)</span>, where <em>m</em> is the number of edges reaching a particular node. The sparser a graph is, the lower this time complexity, unlike the one of the original <em>update(x)</em> the time which stays independent of the edges.</p>
 </div>
 
 
