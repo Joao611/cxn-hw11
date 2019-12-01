@@ -43,12 +43,9 @@ init.graph <- function() {
   return(A)
 }
 
-# Define function for iterative page rank update
+# Define function for iterative page rank update.
 update.x <- function(x, alpha, beta) {
   out.degree <- rowSums(M)
-  
-  # D_inv <- diag(1 / out.degree)
-  # x <- alpha * x %*% D_inv %*% M + beta
   
   for (i in seq_along(x)) {
     tmp <- 0
@@ -63,6 +60,7 @@ update.x <- function(x, alpha, beta) {
   return(x)
 }
 
+# Page rank algorithm. It was modified to only draw the graphs if so desired and added the option of drawing a convergence plot.
 page.rank <- function(n.iter, alpha, M, G, draw.plot = FALSE, draw.convergence = FALSE) {
   beta <- (1 - alpha) / nrow(M)
   x <- rep(0, 11)
